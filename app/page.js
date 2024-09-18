@@ -1,15 +1,16 @@
 "use client";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
 export default function App() {
-  const [socket, setSocket] = useState(undefined);
+  // const [socket, setSocket] = useState(undefined);
 
-  const [roll, setRoll] = useState("starting...");
+  // const [roll, setRoll] = useState("starting...");
 
   const [selectedDice, setSelectedDice] = useState({});
   const [inputDice, setInputDice] = useState("");
   const [apiToken, setApiToken] = useState(null);
   const [rolledDiceResults, setRolledDiceResults] = useState({});
+  const [rerollDice, setRerollDice] = useState(false);
   const handleDiceUpdate = (value) => {
     let currentSelected = Object.assign({}, selectedDice);
     if (currentSelected[value.toString()]) {
@@ -36,7 +37,7 @@ export default function App() {
     setRolledDiceResults({});
   };
 
-  const handleDiceRoll = async () => {
+  const handleDiceRoll = async (token) => {
     // Set up url for get call
     let queryString = "";
     for (let x = 0; x < Object.keys(selectedDice).length; x++) {
@@ -52,39 +53,47 @@ export default function App() {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: apiToken,
+          Authorization: token,
         },
       }
     );
     let result = await rolls.json();
     if (result.error) {
-      setApiToken(null);
+      await getApiToken();
+      setRerollDice(true);
     } else {
       setRolledDiceResults(result.diceRolls);
     }
   };
 
-  useEffect(() => {
-    //Get token for dice rolls
-    async function getApiToken() {
-      let token = await fetch("http://localhost:3000/api/authentication", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      let response = await token.json();
-      setApiToken(response["access_token"]);
-    }
-    if (!apiToken) {
-      getApiToken();
-    }
-    const socket = io("http://localhost:3000");
-    socket.on("roll", (roll) => {
-      setRoll(roll);
+  async function getApiToken() {
+    let token = await fetch("http://localhost:3000/api/authentication", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
-    setSocket(socket);
-  }, [apiToken]);
+    let response = await token.json();
+    setApiToken(response["access_token"]);
+  }
+
+  useEffect(() => {
+    const setToken = async () => {
+      await getApiToken();
+    };
+    if (!apiToken) {
+      setToken();
+    }
+    if (rerollDice && apiToken) {
+      setRerollDice(false);
+      handleDiceRoll(apiToken);
+    }
+    // const socket = io("http://localhost:3000");
+    // socket.on("roll", (roll) => {
+    //   setRoll(roll);
+    // });
+    // setSocket(socket);
+  }, [apiToken, rerollDice]);
 
   return (
     <div className="flex justify-center min-h-screen items-center flex-col bg-slate-100 py-4">
@@ -161,7 +170,7 @@ export default function App() {
                 ? "bg-green-500"
                 : "bg-slate-500"
             } rounded min-w-8 p-2`}
-            onClick={handleDiceRoll}
+            onClick={() => handleDiceRoll(apiToken)}
             disabled={Object.keys(selectedDice).length > 0 ? false : true}
           >
             Roll

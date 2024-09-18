@@ -11,6 +11,7 @@ function getRandomInt(max) {
 export async function GET(req) {
   const headersList = headers();
   const token = headersList.get("Authorization");
+  console.log(token);
   try {
     jwt.verify(token, process.env.NEXT_PUBLIC_TOKEN_PUBLIC_KEY);
   } catch (e) {
