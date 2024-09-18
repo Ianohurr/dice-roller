@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Assumptions:
 
-## Getting Started
+    Instead of just having a 'DM', I allowed all users to add dice and roll whenever and it will just show that. If for some reason we wanted to have just one person who can roll, I'd just add a checkbox to indicate that user is the DM. If they were playing with annoying people, I'd add a value to the JWT saying they are DM so only they can roll.
 
-First, run the development server:
+    Because of the time limit, the UI is subpar, but I assumed this was more about the back end work anyways, so i think what is there for the front end is okay.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+    I wasn't sure what "It should be able to roll many types on the same request." meant exactly. The endpoint can take any amount with any number, but I'm not sure if the option to add in an any sided dice was necessary.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Discussion:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+    Socket package - I looked through 3 popular socket packages for node (websocket, ws, and socket.io). I ultimately chose socket.io because I tried to build this like I would for world tree and socket.io is able to not only have sockets for data but can also add voice/video, which could maybe be helpful in the future.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+    Authentication - I chose to use Auth0. I used auth0 at my last job and while I just used it to create a token here, I again wanted to show kind of what tools i would use to build world tree. Auth0 is the best authentication software in the world and has things that world tree would probably want at some point, such as easy SSO set ups.
 
-## Learn More
+    CSS - I just used tailwind because it's light weight. If this was a more front end heavy project, I would consider using a component library, but again, this was mostly back end so i didn't spend a ton of time on the front end.
 
-To learn more about Next.js, take a look at the following resources:
+    Using Next JS - Since this was a small project I wanted to take a more monolithic approach to it, so since Next already has the API bundled together, it seemed smarter to do then set up an entire express backend. If this was anything bigger I would separate them because I'm not incredibly comfortable having the front end and back end coupled together so closely.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Packages:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+    "dotenv": "^16.4.5" - env variables for api calls
+    "jsonwebtoken": "^9.0.2" - verifying auth0 token
+    "next": "^14.2.11", - nextjs
+    "react": "^18", - react
+    "react-dom": "^18", -react dom
+    "socket.io": "^4.7.5", - chose to use this for my socket manager. found it easy to use, with a lot of extra features.
+    "socket.io-client": "^4.7.5" - ^^^
+    "eslint": "^8", -formatting
+    "eslint-config-next": "14.2.11", -formatting
+    "tailwindcss": "^3.4.1" - minor styling
 
-## Deploy on Vercel
+## Testing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    Didn't have enough time to write jest or cypress tests like I normally would. Just tested by manually running it.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Running
+
+    I will email Jason the env variables to run this once I test downloading it from scratch on my laptop and making sure it easily runs after getting downloaded.

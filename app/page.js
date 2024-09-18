@@ -12,19 +12,24 @@ export default function App() {
   const [rolledDiceResults, setRolledDiceResults] = useState({});
   const [rerollDice, setRerollDice] = useState(false);
   const handleDiceUpdate = (value) => {
-    console.log(value);
     let currentSelected = Object.assign({}, selectedDice);
-    console.log(currentSelected);
     if (currentSelected[value.toString()]) {
       currentSelected[value.toString()] += 1;
-      console.log(currentSelected[value.toString()]);
     } else {
       currentSelected[value.toString()] = 1;
-      console.log("here");
-      currentSelected[value.toString()];
     }
     setSelectedDice(currentSelected);
+    socket.emit("updateSelectedDice", currentSelected);
   };
+
+  useEffect(() => {
+    const socket = io("http://localhost:3000");
+    socket.on("updateSelectedDice", (dice) => {
+      setSelectedDice(dice);
+    });
+    socket.on("clearDice", clearDice);
+    setSocket(socket);
+  }, []);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -38,6 +43,9 @@ export default function App() {
   const clearDice = () => {
     setSelectedDice({});
     setRolledDiceResults({});
+    if (socket) {
+      socket.emit("clearDice");
+    }
   };
 
   const handleDiceRoll = async (token) => {
@@ -66,6 +74,7 @@ export default function App() {
       setRerollDice(true);
     } else {
       setRolledDiceResults(result.diceRolls);
+      socket.emit("handleDiceRoll", result.diceRolls);
     }
   };
 
@@ -82,11 +91,17 @@ export default function App() {
 
   useEffect(() => {
     const socket = io("http://localhost:3000");
-    socket.on("selectedDiceValue", (value) => {
-      console.log("should update value");
-      handleDiceUpdate(value);
+    socket.on("updateSelectedDice", (dice) => {
+      setSelectedDice(dice);
     });
+    socket.on("clearDice", clearDice);
     setSocket(socket);
+    socket.on("handleDiceRoll", (diceRolls) => {
+      setRolledDiceResults(diceRolls);
+    });
+  }, []);
+
+  useEffect(() => {
     const setToken = async () => {
       await getApiToken();
     };
@@ -106,7 +121,7 @@ export default function App() {
         <p>Popular:</p>
         <div className="flex flex-row">
           <button
-            onClick={() => socket.emit("selectedDiceValue", 4)}
+            onClick={() => handleDiceUpdate(4)}
             className="mr-2 bg-blue-500 rounded min-w-8"
           >
             {4}

@@ -9,16 +9,25 @@ const port = 3000;
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
+let currentDice;
 app.prepare().then(() => {
   const httpServer = createServer(handler);
 
   const io = new Server(httpServer);
 
   io.on("connection", (socket) => {
-    console.log("A user connected.");
-    socket.on("selectedDiceValue", (value) => {
-      console.log("received new dice");
-      io.emit("selectedDiceValue", value);
+    if (currentDice) {
+      io.emit("updateSelectedDice", currentDice);
+    }
+    socket.on("updateSelectedDice", (dice) => {
+      currentDice = dice;
+      io.emit("updateSelectedDice", dice);
+    });
+    socket.on("clearDice", () => {
+      io.emit("clearDice");
+    });
+    socket.on("handleDiceRoll", (diceRolls) => {
+      io.emit("handleDiceRoll", diceRolls);
     });
   });
 
