@@ -16,9 +16,9 @@ app.prepare().then(() => {
 
   io.on("connection", (socket) => {
     console.log("A user connected.");
-    socket.on("roll", (roll) => {
-      console.log("received roll");
-      io.emit("roll", roll);
+    socket.on("selectedDiceValue", (value) => {
+      console.log("received new dice");
+      io.emit("selectedDiceValue", value);
     });
   });
 

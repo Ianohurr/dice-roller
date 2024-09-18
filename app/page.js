@@ -1,8 +1,8 @@
 "use client";
-// import { io } from "socket.io-client";
+import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
 export default function App() {
-  // const [socket, setSocket] = useState(undefined);
+  const [socket, setSocket] = useState(undefined);
 
   // const [roll, setRoll] = useState("starting...");
 
@@ -12,15 +12,18 @@ export default function App() {
   const [rolledDiceResults, setRolledDiceResults] = useState({});
   const [rerollDice, setRerollDice] = useState(false);
   const handleDiceUpdate = (value) => {
+    console.log(value);
     let currentSelected = Object.assign({}, selectedDice);
+    console.log(currentSelected);
     if (currentSelected[value.toString()]) {
       currentSelected[value.toString()] += 1;
+      console.log(currentSelected[value.toString()]);
     } else {
       currentSelected[value.toString()] = 1;
+      console.log("here");
+      currentSelected[value.toString()];
     }
     setSelectedDice(currentSelected);
-    // let roll = getRandomInt(value);
-    // socket.emit("roll", roll);
   };
 
   const handleKeyDown = (event) => {
@@ -78,6 +81,12 @@ export default function App() {
   }
 
   useEffect(() => {
+    const socket = io("http://localhost:3000");
+    socket.on("selectedDiceValue", (value) => {
+      console.log("should update value");
+      handleDiceUpdate(value);
+    });
+    setSocket(socket);
     const setToken = async () => {
       await getApiToken();
     };
@@ -88,11 +97,6 @@ export default function App() {
       setRerollDice(false);
       handleDiceRoll(apiToken);
     }
-    // const socket = io("http://localhost:3000");
-    // socket.on("roll", (roll) => {
-    //   setRoll(roll);
-    // });
-    // setSocket(socket);
   }, [apiToken, rerollDice]);
 
   return (
@@ -102,7 +106,7 @@ export default function App() {
         <p>Popular:</p>
         <div className="flex flex-row">
           <button
-            onClick={() => handleDiceUpdate(4)}
+            onClick={() => socket.emit("selectedDiceValue", 4)}
             className="mr-2 bg-blue-500 rounded min-w-8"
           >
             {4}
