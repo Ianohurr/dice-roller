@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
+var jwt = require("jsonwebtoken");
 // Allow any number of dice, with any value attached to them.
 
 function getRandomInt(max) {
@@ -6,6 +8,10 @@ function getRandomInt(max) {
 }
 
 export async function GET(req) {
+  const headersList = headers();
+  const token = headersList.get("Authorization");
+  console.log(jwt.verify(token, "shhhhh"));
+
   // Setting up a regex so the endpoint can't accept anything in the wrong format
   const regex = /^(([1-9]\d*:\d+),)*([1-9]\d*:\d+)$/;
 
