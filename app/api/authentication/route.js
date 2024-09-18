@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
-var request = require("request");
+require("dotenv").config();
 export async function POST(req) {
   const options = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      client_id: "XjhQGYU5UZ3yrhJUcCdGt2jXAAabWMPa",
-      client_secret:
-        "2CAeWc5EB3vaBdzBbZNWXbQd2SbF328iz1D1o_Yigdoygla2txrTudLzcfHVJVUJ",
+      client_id: process.env.NEXT_PUBLIC_AUTH_CLIENT_ID,
+      client_secret: process.env.NEXT_PUBLIC_AUTH_CLIENT_SECRET,
       audience: "http://localhost:3000",
       grant_type: "client_credentials",
     }),
