@@ -56,8 +56,12 @@ export default function App() {
         },
       }
     );
-    let rolledDiceResults = await rolls.json();
-    setRolledDiceResults(rolledDiceResults.diceRolls);
+    let result = await rolls.json();
+    if (result.error) {
+      setApiToken(null);
+    } else {
+      setRolledDiceResults(result.diceRolls);
+    }
   };
 
   useEffect(() => {
@@ -72,15 +76,16 @@ export default function App() {
       let response = await token.json();
       setApiToken(response["access_token"]);
     }
+    if (!apiToken) {
+      getApiToken();
+    }
     const socket = io("http://localhost:3000");
     socket.on("roll", (roll) => {
       setRoll(roll);
     });
-    if (!apiToken) {
-      getApiToken();
-    }
     setSocket(socket);
-  }, []);
+  }, [apiToken]);
+
   return (
     <div className="flex justify-center min-h-screen items-center flex-col bg-slate-100 py-4">
       <h1>Dice Roll</h1>
