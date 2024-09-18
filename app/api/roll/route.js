@@ -11,8 +11,18 @@ function getRandomInt(max) {
 export async function GET(req) {
   const headersList = headers();
   const token = headersList.get("Authorization");
-  let verified = jwt.verify(token, process.env.NEXT_PUBLIC_TOKEN_PUBLIC_KEY);
-  console.log(verified);
+  jwt.verify(
+    token,
+    process.env.NEXT_PUBLIC_TOKEN_PUBLIC_KEY,
+    function (err, decoded) {
+      if (err) {
+        console.log(err);
+        console.log("Obtaining new token...");
+      } else {
+        console.log("sorry, no token :(");
+      }
+    }
+  );
 
   // Setting up a regex so the endpoint can't accept anything in the wrong format
   const regex = /^(([1-9]\d*:\d+),)*([1-9]\d*:\d+)$/;
@@ -20,11 +30,12 @@ export async function GET(req) {
   const url = new URL(req.url);
   let dice = url.searchParams.get("dice");
   const valid = regex.test(dice);
+  console.log(valid);
   if (!valid) {
     return NextResponse.json(
       {
         error:
-          "Dice parameter must be in the format of <dice-number>:<dice-amount>. IE: 4:2",
+          "Dice parameter must be in the format of <dice-number>:<dice-amount>. IE: 4:2. All dice values must be positive integers greater than 1.",
       },
       { status: 400 }
     );

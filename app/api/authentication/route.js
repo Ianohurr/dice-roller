@@ -3,7 +3,9 @@ require("dotenv").config();
 export async function POST(req) {
   const options = {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({
       client_id: process.env.NEXT_PUBLIC_AUTH_CLIENT_ID,
       client_secret: process.env.NEXT_PUBLIC_AUTH_CLIENT_SECRET,
