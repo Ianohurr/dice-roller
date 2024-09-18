@@ -33,8 +33,7 @@ export default function App() {
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-      let currentInput = parseInt(inputDice);
-      if (Number.isInteger(currentInput) && currentInput > 0) {
+      if (Number(inputDice) && Number(inputDice) > 0) {
         handleDiceUpdate(inputDice);
       }
     }
