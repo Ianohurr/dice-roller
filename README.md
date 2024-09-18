@@ -36,3 +36,24 @@
 ## Running
 
     I will email Jason the env variables to run this once I test downloading it from scratch on my laptop and making sure it easily runs after getting downloaded.
+
+    Download the repo, run npm install from the source directory "world-tree-coding-challenge" (if you don't have npm downloaded it is here https://docs.npmjs.com/downloading-and-installing-node-js-and-npm). After downloading it create a file named '.env' in the 'world-tree-coding-challenge' folder and copy/paste the env variables I sent over on email in that file. Run 'npm run dev' from the 'world-tree-coding-challenge' directory.
+
+    After giving it a couple seconds to load, navigate to http://localhost:3000.
+
+    To test some of the requirements, feel free to add in any number of dice and play around.
+
+    To test more specific things, such as the authentication token you have two options. You can use a program like postman to create
+    your own access token, then try to call the dice roll endpoint with that token after 3 minutes and see it fail.
+
+    To see the token get refreshed after 3 minutes, you can go to to the dice roller, which will automatically spawn a token upon
+    logging in and wait three minutes. If you look at your network tab when you try to make a roll after three minutes, you will
+    see that the call fails, but immediately afterwards a new call is made to the authentication endpoint to grab a new token.
+
+    To test the sockets working properly, just open the project on multiple browsers (i just used multiple private windows) and play
+    around with it.
+
+    The app is also set up to pull the most recent dice selected if they weren't cleared and the app is still running. I'm not sure
+    what you guys prefered.
+
+Okay that's it, this was really fun to do and reminded me a lot of when I used to make video games :) let me know if there is any questions you guys need me to answer.
