@@ -2,7 +2,9 @@
 
 Create an auth0 application and fill in these env variables to have an online dice roller
 NEXT_PUBLIC_TOKEN_PUBLIC_KEY
+
 NEXT_PUBLIC_AUTH_CLIENT_ID
+
 NEXT_PUBLIC_AUTH_CLIENT_SECRET
 
 ## Running
